@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { useQuery, useMutation } from 'react-query';
 import axiosClient from 'configs/axiosClient';
+import { useNotify } from 'hooks/useNotify';
 
 const loginSchema = yup.object().shape({
     email: yup.string().email('Invalid email').required('Email is required'),
@@ -18,6 +19,7 @@ interface LoginFormValues {
 }
 
 export const SignIn = () => {
+    const { notify, notifyError } = useNotify();
     const {
         register,
         handleSubmit,
@@ -27,14 +29,23 @@ export const SignIn = () => {
         resolver: yupResolver(loginSchema),
     });
 
-    const handleLogin = useMutation(async (data: LoginFormValues) => {
-        const response = await axiosClient.post('/auth/signin', data);
-        return response.data;
-    });
+    const { mutate: handleLogin, isLoading } = useMutation(
+        async (data: LoginFormValues) => {
+            await axiosClient.post('/auth/signin', data);
+        },
+        {
+            onSuccess: () => {
+                notify('Login successful', 'success');
+            },
+            onError: (error: unknown) => {
+                notifyError(error);
+            },
+        }
+    );
 
     const onSubmit = (data: LoginFormValues) => {
         // Handle login logic here (e.g., send data to an API)
-        handleLogin.mutate(data);
+        handleLogin(data);
     };
 
     return (
@@ -42,7 +53,6 @@ export const SignIn = () => {
             <div className="p-8 bg-white shadow-md rounded">
                 <h2 className="text-2xl font-bold mb-4 text-center">Login</h2>
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    {' '}
                     {/* Update handleSubmit */}
                     <div className="mb-4">
                         <label

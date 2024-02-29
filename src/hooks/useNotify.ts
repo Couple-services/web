@@ -1,3 +1,4 @@
+import { AxiosError } from 'axios';
 import { useCallback } from 'react';
 import { toast } from 'react-toastify';
 
@@ -9,11 +10,20 @@ export function useNotify() {
         []
     );
     const notifyError = useCallback((error: unknown) => {
-        if (error instanceof Error) {
-            toast(error.message, { type: 'error' });
+        let message = 'Something went wrong';
+        if (error instanceof AxiosError) {
+            if (error.response?.data?.message) {
+                console.log(error.response.data.message);
+                message = error.response.data.message;
+            } else {
+                message = error.message;
+            }
+        } else if (error instanceof Error) {
+            message = error.message;
         } else if (typeof error === 'string') {
-            toast(error, { type: 'error' });
+            message = error;
         }
+        toast(message, { type: 'error' });
     }, []);
     return { notify, notifyError };
 }
