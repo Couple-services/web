@@ -1,0 +1,6 @@
+/.github/*.md
+/.github/CODEOWNERS
+/build/
+/coverage/
+/out/
+/package-lock.json
