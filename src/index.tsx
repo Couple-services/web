@@ -5,12 +5,16 @@ import { QueryClientProvider } from 'react-query';
 import App from './App';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { notifyOptions } from 'configs/notifyOptions';
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
 );
 root.render(
     <React.StrictMode>
+        <ToastContainer {...notifyOptions} />
         <QueryClientProvider client={queryClient}>
             <App />
         </QueryClientProvider>
