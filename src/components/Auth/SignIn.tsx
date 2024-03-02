@@ -1,9 +1,10 @@
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useMutation } from '@tanstack/react-query';
+import { useNotify } from 'hooks/useNotify';
+import { authQueries } from 'queries/auth';
+import { AuthQueryKeys } from 'queries/auth/types';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
-import { useQuery, useMutation } from 'react-query';
-import axiosClient from 'configs/axiosClient';
-import { useNotify } from 'hooks/useNotify';
 
 const loginSchema = yup.object().shape({
     email: yup.string().email('Invalid email').required('Email is required'),
@@ -29,23 +30,20 @@ export const SignIn = () => {
         resolver: yupResolver(loginSchema),
     });
 
-    const { mutate: handleLogin, isLoading } = useMutation(
-        async (data: LoginFormValues) => {
-            await axiosClient.post('/auth/signin', data);
+    const { mutate: signin } = useMutation({
+        mutationKey: [AuthQueryKeys.signin],
+        mutationFn: authQueries.signin,
+        onSuccess: () => {
+            notify('Login successful', 'success');
         },
-        {
-            onSuccess: () => {
-                notify('Login successful', 'success');
-            },
-            onError: (error: unknown) => {
-                notifyError(error);
-            },
-        }
-    );
+        onError: (error: unknown) => {
+            notifyError(error);
+        },
+    });
 
     const onSubmit = (data: LoginFormValues) => {
         // Handle login logic here (e.g., send data to an API)
-        handleLogin(data);
+        signin(data);
     };
 
     return (
