@@ -2,9 +2,15 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useMutation } from '@tanstack/react-query';
 import { useNotify } from 'hooks/useNotify';
 import { authQueries } from 'queries/auth';
-import { AuthQueryKeys } from 'queries/auth/types';
+import { AuthQueryKeys, LoginFormValues } from 'queries/auth/types';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
+import { useNavigate } from 'react-router-dom';
+import { ROUTES } from 'routes/types';
+import { useLocalStorage } from 'react-use';
+import { ACCESS_TOKEN_KEY } from 'consts';
+import { userAtom } from 'state/atoms/user';
+import { useAtom } from 'jotai';
 
 const loginSchema = yup.object().shape({
     email: yup.string().email('Invalid email').required('Email is required'),
@@ -14,13 +20,12 @@ const loginSchema = yup.object().shape({
         .required('Password is required'),
 });
 
-interface LoginFormValues {
-    email: string;
-    password: string;
-}
-
 export const SignIn = () => {
     const { notify, notifyError } = useNotify();
+    const navigate = useNavigate();
+    const [, setToken] = useLocalStorage(ACCESS_TOKEN_KEY, '');
+    const [, write] = useAtom(userAtom);
+
     const {
         register,
         handleSubmit,
@@ -33,8 +38,12 @@ export const SignIn = () => {
     const { mutate: signin } = useMutation({
         mutationKey: [AuthQueryKeys.signin],
         mutationFn: authQueries.signin,
-        onSuccess: () => {
-            notify('Login successful', 'success');
+        onSuccess: (data) => {
+            const { accessToken, ...user } = data;
+            notify('Login successful');
+            setToken(accessToken);
+            write(user);
+            navigate(ROUTES.HOME);
         },
         onError: (error: unknown) => {
             notifyError(error);
@@ -42,7 +51,6 @@ export const SignIn = () => {
     });
 
     const onSubmit = (data: LoginFormValues) => {
-        // Handle login logic here (e.g., send data to an API)
         signin(data);
     };
 

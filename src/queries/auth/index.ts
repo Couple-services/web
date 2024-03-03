@@ -1,12 +1,12 @@
 import axiosClient from 'configs/axiosClient';
-import { LoginFormValues, SignUpFormValues } from './types';
+import { LoginFormValues, SignInResponse, SignUpFormValues } from './types';
 
 enum AuthRoutes {
     signin = '/auth/signin',
     signup = '/auth/signup',
 }
 
-const signin = async (data: LoginFormValues) => {
+const signin = async (data: LoginFormValues): Promise<SignInResponse> => {
     const response = await axiosClient.post(AuthRoutes.signin, data);
     return response.data;
 };

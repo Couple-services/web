@@ -9,17 +9,20 @@ import 'react-toastify/dist/ReactToastify.css';
 import { notifyOptions } from 'configs/notifyOptions';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { AppRoutes } from 'routes';
+import { Provider } from 'jotai';
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
 );
 root.render(
     <React.StrictMode>
-        <ToastContainer {...notifyOptions} />
-        <QueryClientProvider client={queryClient}>
-            <AppRoutes />
-            <ReactQueryDevtools buttonPosition="bottom-right" />
-        </QueryClientProvider>
+        <Provider>
+            <ToastContainer {...notifyOptions} />
+            <QueryClientProvider client={queryClient}>
+                <AppRoutes />
+                <ReactQueryDevtools buttonPosition="bottom-right" />
+            </QueryClientProvider>
+        </Provider>
     </React.StrictMode>
 );
 

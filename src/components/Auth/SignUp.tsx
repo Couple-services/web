@@ -1,5 +1,11 @@
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useMutation } from '@tanstack/react-query';
+import { useNotify } from 'hooks/useNotify';
+import { authQueries } from 'queries/auth';
+import { AuthQueryKeys, SignUpFormValues } from 'queries/auth/types';
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import { ROUTES } from 'routes/types';
 import * as yup from 'yup';
 
 const signUpSchema = yup.object().shape({
@@ -14,13 +20,9 @@ const signUpSchema = yup.object().shape({
         .required('Password is required'),
 });
 
-interface SignUpFormValues {
-    name: string;
-    email: string;
-    password: string;
-}
-
 export const SignUp = () => {
+    const { notify, notifyError } = useNotify();
+    const navigate = useNavigate();
     const {
         register,
         handleSubmit,
@@ -30,8 +32,19 @@ export const SignUp = () => {
         resolver: yupResolver(signUpSchema),
     });
 
+    const { mutate: singup } = useMutation({
+        mutationKey: [AuthQueryKeys.signup],
+        mutationFn: authQueries.signup,
+        onSuccess: (data) => {
+            notify('Sign Up successful');
+            navigate(ROUTES.HOME);
+        },
+        onError: (error: unknown) => {
+            notifyError(error);
+        },
+    });
     const onSubmit = (data: SignUpFormValues) => {
-        console.log(data);
+        singup(data);
     };
 
     return (

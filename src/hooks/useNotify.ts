@@ -1,10 +1,15 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { AxiosError } from 'axios';
 import { useCallback } from 'react';
 import { toast } from 'react-toastify';
 
 export function useNotify() {
     const notify = useCallback(
-        (message: string, type: 'info' | 'success' | 'warning' | 'default') => {
+        (
+            message: string,
+            type: 'info' | 'success' | 'warning' | 'default' = 'success'
+        ) => {
             toast(message, { type });
         },
         []

@@ -5,8 +5,26 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ROUTES } from './types';
 import { NotFoundPage } from 'components/NotFound';
 import { ErrorPage } from 'components/Error';
+import { userAtom } from 'state/atoms/user';
+import { useAtom } from 'jotai';
+import { useQuery } from '@tanstack/react-query';
+import { userQueries } from 'queries/user';
+import { UserQueryKey } from 'queries/user/types';
+import { useEffect } from 'react';
 
 export const AppRoutes = () => {
+    const [read, write] = useAtom(userAtom);
+    const { data: user, refetch } = useQuery({
+        queryKey: [UserQueryKey.me],
+        queryFn: userQueries.getCurrentUser,
+    });
+
+    useEffect(() => {
+        if (user) {
+            write(user);
+        }
+    }, [user, write]);
+
     return (
         <BrowserRouter>
             <Routes>

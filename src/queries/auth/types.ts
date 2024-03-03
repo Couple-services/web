@@ -13,3 +13,13 @@ export enum AuthQueryKeys {
     signin = 'signin',
     signup = 'signup',
 }
+
+export interface User {
+    id: string;
+    name: string;
+    email: string;
+}
+
+export interface SignInResponse extends User {
+    accessToken: string;
+}

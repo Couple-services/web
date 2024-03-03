@@ -1,8 +1,9 @@
-const AUTH_TOKEN_KEY = 'authToken';
+import { ACCESS_TOKEN_KEY } from 'consts';
+
 export const getAuthToken = () => {
-    return localStorage.getItem(AUTH_TOKEN_KEY);
+    return JSON.parse(localStorage.getItem(ACCESS_TOKEN_KEY) || '') as string;
 };
 
 export const setAuthToken = (token: string) => {
-    localStorage.setItem(AUTH_TOKEN_KEY, token);
+    localStorage.setItem(ACCESS_TOKEN_KEY, token);
 };
