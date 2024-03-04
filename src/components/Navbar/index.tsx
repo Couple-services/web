@@ -4,8 +4,9 @@ import {
     faUser,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useClickAway } from 'react-use';
 import { ROUTES } from 'routes/types';
 
 interface NavProps {
@@ -14,6 +15,11 @@ interface NavProps {
 
 export const Navbar = ({ isLoggedIn }: NavProps) => {
     const [showUserMenu, setShowUserMenu] = useState(false);
+
+    const menuRef = useRef(null);
+    useClickAway(menuRef, () => {
+        setShowUserMenu(false);
+    });
 
     return (
         <nav className="bg-gray-800 text-white p-4 flex items-center justify-between">
@@ -48,7 +54,9 @@ export const Navbar = ({ isLoggedIn }: NavProps) => {
                     </button>
 
                     {showUserMenu && (
-                        <div className="absolute right-2 top-14 mt-2 bg-white rounded shadow-md py-1 px-1 min-w-40">
+                        <div
+                            className="absolute right-2 top-14 mt-2 bg-white rounded shadow-md py-1 px-1 min-w-40"
+                            ref={menuRef}>
                             <Link
                                 to={ROUTES.PROFILE}
                                 className="block px-4 py-2 hover:bg-gray-200 text-black w-full text-left">

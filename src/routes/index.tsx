@@ -13,6 +13,7 @@ import { UserQueryKey } from 'queries/user/types';
 import { useEffect } from 'react';
 import { Chat } from 'components/Chat';
 import { Navbar } from 'components/Navbar';
+import { UserProfile } from 'components/Profile';
 
 export const AppRoutes = () => {
     const [read, write] = useAtom(userAtom);
@@ -49,6 +50,11 @@ export const AppRoutes = () => {
                 <Route
                     path={ROUTES.CHAT}
                     element={<Chat />}
+                    errorElement={<ErrorPage />}
+                />
+                <Route
+                    path={ROUTES.PROFILE}
+                    element={<UserProfile />}
                     errorElement={<ErrorPage />}
                 />
                 <Route path="*" element={<NotFoundPage />} />
