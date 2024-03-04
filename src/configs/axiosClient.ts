@@ -1,4 +1,4 @@
-import axios, { AxiosError } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { API_URL } from 'consts';
 import queryString from 'query-string';
 import { getAuthToken } from 'utils/auth';
@@ -24,7 +24,7 @@ axiosClient.interceptors.request.use(
 );
 
 axiosClient.interceptors.response.use(
-    (response) => {
+    (response: AxiosResponse) => {
         return response;
     },
     (error: AxiosError) => {

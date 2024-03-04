@@ -11,22 +11,25 @@ import { useQuery } from '@tanstack/react-query';
 import { userQueries } from 'queries/user';
 import { UserQueryKey } from 'queries/user/types';
 import { useEffect } from 'react';
+import { Chat } from 'components/Chat';
+import { Navbar } from 'components/Navbar';
 
 export const AppRoutes = () => {
     const [read, write] = useAtom(userAtom);
-    const { data: user, refetch } = useQuery({
+    const { data } = useQuery({
         queryKey: [UserQueryKey.me],
         queryFn: userQueries.getCurrentUser,
     });
 
     useEffect(() => {
-        if (user) {
-            write(user);
+        if (data) {
+            write(data);
         }
-    }, [user, write]);
+    }, [data, write]);
 
     return (
         <BrowserRouter>
+            <Navbar isLoggedIn={Boolean(read)} />
             <Routes>
                 <Route
                     path={ROUTES.HOME}
@@ -41,6 +44,11 @@ export const AppRoutes = () => {
                 <Route
                     path={ROUTES.SIGN_UP}
                     element={<SignUp />}
+                    errorElement={<ErrorPage />}
+                />
+                <Route
+                    path={ROUTES.CHAT}
+                    element={<Chat />}
                     errorElement={<ErrorPage />}
                 />
                 <Route path="*" element={<NotFoundPage />} />
