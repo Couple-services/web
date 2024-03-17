@@ -12,7 +12,6 @@ import { userQueries } from 'queries/user';
 import { UserQueryKey } from 'queries/user/types';
 import { useEffect } from 'react';
 import { Chat } from 'components/Chat';
-import { Navbar } from 'components/Navbar';
 import { UserProfile } from 'components/Profile';
 
 export const AppRoutes = () => {
@@ -30,7 +29,6 @@ export const AppRoutes = () => {
 
     return (
         <BrowserRouter>
-            <Navbar isLoggedIn={Boolean(read)} />
             <Routes>
                 <Route
                     path={ROUTES.HOME}
